@@ -3,7 +3,7 @@ import express from 'express';
 import './db';
 // other imports
 import cors from 'cors';
-
+import moviesRouter from './api/movies';  
 //... other imports
 import usersRouter from './api/users';
 
@@ -32,7 +32,7 @@ const port = process.env.PORT;
 
 app.use(express.json());
 
-
+app.use('/api/movies', moviesRouter); 
 
 
 //Users router
