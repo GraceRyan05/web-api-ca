@@ -1,30 +1,29 @@
-export const getMovies = () => {
-  return fetch(
-    `http://localhost:8080/api/movies/discover`
-  ).then((response) => {
-    if (!response.ok) {
-      return response.json().then((error) => {
-        throw new Error(error.status_message || "Something went wrong");
-      });
+// Fetch discover movies from backend (requires JWT)
+export const getMovies = async () => {
+  const response = await fetch('http://localhost:8080/api/movies/discover', {
+    headers: {
+      'Authorization': window.localStorage.getItem('token')
     }
-    return response.json();
-  })
-  .catch((error) => {
-      throw error
   });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.msg || 'Something went wrong');
+  }
+  return response.json();
 };
+
 
 
 export const getUpcomingMovies = (page = 1) => {
   return fetch(
     `https://api.themoviedb.org/3/movie/upcoming?api_key=${import.meta.env.VITE_TMDB_KEY}&language=en-US&page=${page}`
-  ).then((response) => {
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
-    return response.json();
+  ).then(res => {
+    if (!res.ok) throw new Error(res.statusText);
+    return res.json();
   });
 };
+
 
   export const getMovieReviews = ({ queryKey }) => {
     const [, idPart] = queryKey;
