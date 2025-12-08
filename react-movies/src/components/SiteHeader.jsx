@@ -27,7 +27,7 @@ const SiteHeader = ({ onToggleTheme, isDarkMode }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const menuOptions = [
-    { label: "Home", path: "/" },
+    { label: "Home", path: "/movies" },
     { label: "Upcoming", path: "/movies/upcoming" },
     { label: "Popular", path: "/movies/popularMovies" },
     { label: "Top Rated", path: "/movies/topRatedMovies" },
@@ -35,7 +35,7 @@ const SiteHeader = ({ onToggleTheme, isDarkMode }) => {
     { label: "Now Playing", path: "/movies/nowPlaying" },
     isAuthenticated && { label: "Favorites", path: "/movies/favorites" },
     isAuthenticated && { label: "Must Watch", path: "/movies/mustWatch" },
-  ].filter(Boolean); // remove false entries
+  ].filter(Boolean);
 
   const handleMenuSelect = (path) => {
     setAnchorEl(null);
@@ -46,11 +46,21 @@ const SiteHeader = ({ onToggleTheme, isDarkMode }) => {
     setAnchorEl(event.currentTarget);
   };
 
+  // Sign out and redirect to /startPage
+  const handleSignout = () => {
+    signout();
+    navigate("/startPage");
+  };
+
   return (
     <>
       <AppBar position="fixed" color="secondary">
         <Toolbar>
-          <Typography variant="h4" sx={{ flexGrow: 1, cursor: "pointer" }} onClick={() => navigate("/")}>
+          <Typography
+            variant="h4"
+            sx={{ flexGrow: 1, cursor: "pointer" }}
+            onClick={() => navigate("/")}
+          >
             TMDB
           </Typography>
 
@@ -67,7 +77,10 @@ const SiteHeader = ({ onToggleTheme, isDarkMode }) => {
                 transformOrigin={{ vertical: "top", horizontal: "right" }}
               >
                 {menuOptions.map((opt) => (
-                  <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>
+                  <MenuItem
+                    key={opt.label}
+                    onClick={() => handleMenuSelect(opt.path)}
+                  >
                     {opt.label}
                   </MenuItem>
                 ))}
@@ -78,14 +91,18 @@ const SiteHeader = ({ onToggleTheme, isDarkMode }) => {
                   </>
                 )}
                 {isAuthenticated && (
-                  <MenuItem onClick={signout}>Sign Out</MenuItem>
+                  <MenuItem onClick={handleSignout}>Sign Out</MenuItem>
                 )}
               </Menu>
             </>
           ) : (
             <>
               {menuOptions.map((opt) => (
-                <Button key={opt.label} color="inherit" onClick={() => handleMenuSelect(opt.path)}>
+                <Button
+                  key={opt.label}
+                  color="inherit"
+                  onClick={() => handleMenuSelect(opt.path)}
+                >
                   {opt.label}
                 </Button>
               ))}
@@ -102,7 +119,7 @@ const SiteHeader = ({ onToggleTheme, isDarkMode }) => {
               ) : (
                 <>
                   <Typography sx={{ mx: 2 }}>Welcome {userName}!</Typography>
-                  <Button color="inherit" onClick={signout}>
+                  <Button color="inherit" onClick={handleSignout}>
                     Sign Out
                   </Button>
                 </>
@@ -110,7 +127,6 @@ const SiteHeader = ({ onToggleTheme, isDarkMode }) => {
             </>
           )}
 
-          {/* Theme toggle */}
           <IconButton color="inherit" onClick={onToggleTheme}>
             {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
           </IconButton>

@@ -84,7 +84,7 @@ const StartPage = () => {
           <Button
             variant="text"
             component={Link}
-            to="/"
+            to="/movies"
             sx={{
               px: 4,
               py: 1.2,

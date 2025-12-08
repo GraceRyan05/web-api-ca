@@ -85,7 +85,7 @@ const App = () => {
       <AuthContextProvider>
         <SiteHeader  onToggleTheme={toggleTheme} isDarkMode={mode === 'dark'}/>
           <Routes>
-          <Route path="/movies." element={<HomePage />} />
+          <Route path="/movies" element={<HomePage />} />
             <Route path="/" element={< StartPage />} />
             <Route path="/login" element={< LoginPage />} />
             <Route path="/signup" element={< SignupPage />} />

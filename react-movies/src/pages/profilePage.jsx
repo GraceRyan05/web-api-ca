@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Box, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router";
+import { AuthContext } from '../contexts/authContext';
 
 const ProfilePage = () => {
+  const { isAuthenticated, userName } = useContext(AuthContext);
   const navigate = useNavigate();
 
   return (
@@ -17,13 +19,25 @@ const ProfilePage = () => {
         gap: 2,
       }}
     >
-      <Typography variant="h5" fontWeight="bold">
-        You must log in to see your profile
-      </Typography>
-
-      <Button variant="contained" onClick={() => navigate("/login")}>
-        Go to Login
-      </Button>
+      {isAuthenticated ? (
+        <>
+          <Typography variant="h5" fontWeight="bold">
+            User Profile
+          </Typography>
+          <Typography variant="body1">
+            Welcome, {userName}!
+          </Typography>
+        </>
+      ) : (
+        <>
+          <Typography variant="h5" fontWeight="bold">
+            You must log in to see your profile
+          </Typography>
+          <Button variant="contained" onClick={() => navigate("/login")}>
+            Go to Login
+          </Button>
+        </>
+      )}
     </Box>
   );
 };
