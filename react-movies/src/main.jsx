@@ -1,6 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Route, Navigate, Routes, Link } from "react-router";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router";
 import HomePage from "./pages/homePage";
 import MoviePage from "./pages/movieDetailsPage";
 import FavoriteMoviesPage from "./pages/favoriteMoviesPage";
@@ -18,17 +18,21 @@ import TrendingPage from "./pages/trendingMoviesPage";
 import NowPlayingPage from "./pages/nowPlayingPage";
 import MovieCreditsPage from "./pages/movieCreditsPage";
 import PersonDetailsPage from "./pages/personDetailsPage";
-
+import LoginPage from "./pages/loginPage";
+import SignupPage from "./pages/signupPage";
+import StartPage from "./pages/startPage";
+import ProfilePage from "./pages/profilePage";
 //MUI Theme Provider - Global theme settings for the app
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-
 import { useState, useMemo } from "react";
+
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 360000,
-      refetchInterval: 360000, 
+      refetchInterval: 360000,
       refetchOnWindowFocus: false
     },
   },
@@ -78,7 +82,11 @@ const App = () => {
       <BrowserRouter>
         <SiteHeader  onToggleTheme={toggleTheme} isDarkMode={mode === 'dark'}/>
           <Routes>
-            <Route path="/" element={<HomePage />} />
+          <Route path="/movies/homePage" element={<HomePage />} />
+            <Route path="/" element={< StartPage />} />
+            <Route path="/login" element={< LoginPage />} />
+            <Route path="/signup" element={< SignupPage />} />
+            <Route path="/profile" element={< ProfilePage />} />
           <Route path="/movies/favorites" element={<FavoriteMoviesPage />} />
           <Route path="/movies/upcoming" element={<UpcomingMoviesPage />} />
           <Route path="/movies/mustWatch" element={<MustWatchMoviesPage />} />
@@ -114,3 +122,4 @@ rootElement.render(<App />);
 //https://react.dev/reference/react/useMemo
 //https://mui.com/material-ui/customization/theming/#theme-provider
 //https://mui.com/material-ui/customization/dark-mode/
+
