@@ -8,7 +8,9 @@ import StartPage from "./pages/startPage";
 import ProfilePage from "./pages/profilePage";
 import AuthContextProvider from "./contexts/authContext";
 import ProtectedRoutes from "./protectedRoutes";
+import Header from "./components/SiteHeader";
 import './App.css';
+
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,7 +28,7 @@ const App = () => {
       <BrowserRouter>
         <AuthContextProvider>
           <div className="container">
-            <h1>Tasky</h1>
+            <Header Tasky />
             <Routes>
               <Route path="/" element={< StartPage />} />
               <Route path="/login" element={< LoginPage />} />
