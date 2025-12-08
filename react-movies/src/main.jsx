@@ -5,7 +5,7 @@ import HomePage from "./pages/homePage";
 import MoviePage from "./pages/movieDetailsPage";
 import FavoriteMoviesPage from "./pages/favoriteMoviesPage";
 import MovieReviewPage from "./pages/movieReviewPage";
-import SiteHeader from './components/siteHeader';
+import SiteHeader from './components/SiteHeader';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import MoviesContextProvider from "./contexts/moviesContext";
@@ -74,7 +74,7 @@ const App = () => {
 
   
   return (
-    <AuthContextProvider>
+    
     <QueryClientProvider client={queryClient}>
       <MoviesContextProvider>
         {/* ThemeProvider to apply the theme across the app */}
@@ -82,6 +82,7 @@ const App = () => {
           {/* CssBaseline to apply global CSS resets and base styles */}
           <CssBaseline /> 
       <BrowserRouter>
+      <AuthContextProvider>
         <SiteHeader  onToggleTheme={toggleTheme} isDarkMode={mode === 'dark'}/>
           <Routes>
           <Route path="/movies." element={<HomePage />} />
@@ -109,12 +110,13 @@ const App = () => {
           <Route path="*" element={<Navigate to="/" />} />
             
           </Routes>
+          </AuthContextProvider>
       </BrowserRouter>
       </ThemeProvider>
       </MoviesContextProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
-  </AuthContextProvider>
+ 
   );
 };
 
