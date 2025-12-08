@@ -1,29 +1,39 @@
 import React, { useState, useContext } from "react";
 import { Box, Button, TextField, Typography, Paper } from "@mui/material";
+import { Navigate } from "react-router";
 import { AuthContext } from "../contexts/authContext"; // make sure path is correct
 
 const SignUpPage = () => {
-  const { register } = useContext(AuthContext);
+  const context = useContext(AuthContext);
 
-  const [username, setUsername] = useState("");
+  const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordAgain, setPasswordAgain] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [registered, setRegistered] = useState(false);
 
   const handleRegister = async () => {
     setError("");
-    setSuccess("");
 
-    if (password !== confirmPassword) {
+    // Password validation regex: at least 8 chars, one letter, one digit, one symbol
+    const passwordRegEx = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+
+    if (!passwordRegEx.test(password)) {
+      setError(
+        "Password must be at least 8 characters, include a letter, a number, and a special character."
+      );
+      return;
+    }
+
+    if (password !== passwordAgain) {
       setError("Passwords do not match!");
       return;
     }
 
     try {
-      const result = await register(username, password);
+      const result = await context.register(userName, password);
       if (result) {
-        setSuccess("Registration successful! You can now log in.");
+        setRegistered(true); // trigger redirect
       } else {
         setError("Registration failed. Please try again.");
       }
@@ -31,6 +41,11 @@ const SignUpPage = () => {
       setError(err.message || "Something went wrong.");
     }
   };
+
+  // Redirect to login page after successful registration
+  if (registered) {
+    return <Navigate to="/login" />;
+  }
 
   return (
     <Box
@@ -57,14 +72,14 @@ const SignUpPage = () => {
         </Typography>
 
         <Typography variant="body2">
-          Register a username and password to log in.
+          Register a username and password to log in. Password must be at least 8 characters with a letter, a number, and a symbol.
         </Typography>
 
         <TextField
           label="Username"
           fullWidth
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
         />
 
         <TextField
@@ -79,12 +94,11 @@ const SignUpPage = () => {
           label="Confirm Password"
           type="password"
           fullWidth
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
+          value={passwordAgain}
+          onChange={(e) => setPasswordAgain(e.target.value)}
         />
 
         {error && <Typography color="error">{error}</Typography>}
-        {success && <Typography color="primary">{success}</Typography>}
 
         <Button variant="contained" fullWidth onClick={handleRegister}>
           Register
