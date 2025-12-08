@@ -26,7 +26,8 @@ import ProfilePage from "./pages/profilePage";
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useState, useMemo } from "react";
-
+import AuthContextProvider from "./contexts/authContext";
+import ProtectedRoutes from "./protectedRoutes";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -73,6 +74,7 @@ const App = () => {
 
   
   return (
+    <AuthContextProvider>
     <QueryClientProvider client={queryClient}>
       <MoviesContextProvider>
         {/* ThemeProvider to apply the theme across the app */}
@@ -82,21 +84,26 @@ const App = () => {
       <BrowserRouter>
         <SiteHeader  onToggleTheme={toggleTheme} isDarkMode={mode === 'dark'}/>
           <Routes>
-          <Route path="/movies/homePage" element={<HomePage />} />
+          <Route path="/movies." element={<HomePage />} />
             <Route path="/" element={< StartPage />} />
             <Route path="/login" element={< LoginPage />} />
             <Route path="/signup" element={< SignupPage />} />
             <Route path="/profile" element={< ProfilePage />} />
-          <Route path="/movies/favorites" element={<FavoriteMoviesPage />} />
+       
           <Route path="/movies/upcoming" element={<UpcomingMoviesPage />} />
-          <Route path="/movies/mustWatch" element={<MustWatchMoviesPage />} />
+         
           <Route path="/movies/popularMovies" element={<PopularPage />} />
           <Route path="/movies/topRatedMovies" element={<TopRatedPage />} />
           <Route path="/movies/trendingMovies" element={<TrendingPage />} />
           <Route path="/movies/nowPlaying" element={<NowPlayingPage />} />
+          <Route element={<ProtectedRoutes />}>
+        <Route path="/movies/favorites" element={<FavoriteMoviesPage />} />
+        <Route path="/movies/mustWatch" element={<MustWatchMoviesPage />} />
+        <Route path="/reviews/form" element={<AddMovieReviewPage />} />
+      </Route>
           <Route path="/movies/:id" element={<MoviePage />} />
           <Route path="/reviews/:id" element={<MovieReviewPage />} />
-          <Route path="/reviews/form" element={<AddMovieReviewPage />} />
+         
           <Route path="/credits/:id" element={<MovieCreditsPage />} />
           <Route path="/person/:id" element={<PersonDetailsPage />} />
           <Route path="*" element={<Navigate to="/" />} />
@@ -107,6 +114,7 @@ const App = () => {
       </MoviesContextProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
+  </AuthContextProvider>
   );
 };
 
