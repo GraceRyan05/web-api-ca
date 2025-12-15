@@ -3,25 +3,30 @@ import { Navigate, useLocation, Link } from "react-router";
 import { Box, Typography, Paper, TextField, Button, Stack } from "@mui/material";
 import { AuthContext } from "../contexts/authContext";
 
-
 const LoginPage = () => {
   const context = useContext(AuthContext);
-
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(""); // <-- add state for error messages
 
-  const login = () => {
-    context.authenticate(userName, password);
-    };
+  let location = useLocation();
+  const { from } = location.state ? { from: location.state.from.pathname } : { from: "/movies" };
 
-    let location = useLocation();
-
-     // Set 'from' to path where browser is redirected after a successful login - either / or the protected path user requested
-    const { from } = location.state ? { from: location.state.from.pathname } : { from: "/movies" };
-
-    if (context.isAuthenticated === true) {
-        return <Navigate to={from} />;
+  const login = async () => {
+    setError(""); // reset error before login
+    try {
+      const success = await context.authenticate(userName, password);
+      if (!success) {
+        setError("Invalid username or password"); // <-- display error if login fails
+      }
+    } catch (err) {
+      setError(err.message || "Something went wrong"); // <-- handle unexpected errors
     }
+  };
+
+  if (context.isAuthenticated === true) {
+    return <Navigate to={from} />;
+  }
 
   return (
     <Box
@@ -66,6 +71,8 @@ const LoginPage = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Stack>
+
+        {error && <Typography color="error">{error}</Typography>} {/* <-- show error */}
 
         <Button
           variant="contained"

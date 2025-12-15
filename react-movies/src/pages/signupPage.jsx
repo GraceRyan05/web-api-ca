@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Box, Button, TextField, Typography, Paper } from "@mui/material";
 import { Navigate } from "react-router";
-import { AuthContext } from "../contexts/authContext"; // make sure path is correct
+import { AuthContext } from "../contexts/authContext";
 
 const SignUpPage = () => {
   const context = useContext(AuthContext);
@@ -9,11 +9,11 @@ const SignUpPage = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(""); // <-- error state
   const [registered, setRegistered] = useState(false);
 
   const handleRegister = async () => {
-    setError("");
+    setError(""); // reset error
 
     // Password validation regex: at least 8 chars, one letter, one digit, one symbol
     const passwordRegEx = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
@@ -31,18 +31,17 @@ const SignUpPage = () => {
     }
 
     try {
-      const result = await context.register(userName, password);
-      if (result) {
-        setRegistered(true); // trigger redirect
+      const success = await context.register(userName, password);
+      if (success) {
+        setRegistered(true); // redirect to login
       } else {
-        setError("Registration failed. Please try again.");
+        setError("Registration failed. Username may already exist.");
       }
     } catch (err) {
-      setError(err.message || "Something went wrong.");
+      setError(err.message || "Something went wrong. Please try again.");
     }
   };
 
-  // Redirect to login page after successful registration
   if (registered) {
     return <Navigate to="/login" />;
   }
@@ -98,7 +97,7 @@ const SignUpPage = () => {
           onChange={(e) => setPasswordAgain(e.target.value)}
         />
 
-        {error && <Typography color="error">{error}</Typography>}
+        {error && <Typography color="error">{error}</Typography>} {/* <-- display errors */}
 
         <Button variant="contained" fullWidth onClick={handleRegister}>
           Register
