@@ -4,25 +4,25 @@ import { AuthContext } from "./authContext";
 export const MoviesContext = React.createContext(null);
 
 const MoviesContextProvider = (props) => {
-  // favourites stored as full backend objects
-  // { _id, movieId, title, posterPath }
-  const [favorites, setFavorites] = useState([]);
+  // Backend objects
+  const [favorites, setFavorites] = useState([]); // {_id, movieId, title, posterPath}
+  const [mustWatch, setMustWatch] = useState([]); // {_id, movieId, title, posterPath}
   const [myReviews, setMyReviews] = useState({});
-  const [mustWatch, setMustWatch] = useState([]);
 
   const { authToken } = useContext(AuthContext);
 
-  /* -------------------- LOAD USER FAVOURITES -------------------- */
+  /* -------------------- LOAD USER DATA -------------------- */
   useEffect(() => {
     if (!authToken) {
       setFavorites([]);
+      setMustWatch([]);
       return;
     }
 
     const loadFavorites = async () => {
       try {
         const res = await fetch("/api/favorites", {
-          headers: { Authorization: authToken }
+          headers: { Authorization: authToken },
         });
         const data = await res.json();
         setFavorites(data);
@@ -31,28 +31,38 @@ const MoviesContextProvider = (props) => {
       }
     };
 
+    const loadMustWatch = async () => {
+      try {
+        const res = await fetch("/api/mustwatch", {
+          headers: { Authorization: authToken },
+        });
+        const data = await res.json();
+        setMustWatch(data);
+      } catch (err) {
+        console.error("Failed to load must-watch:", err);
+      }
+    };
+
     loadFavorites();
+    loadMustWatch();
   }, [authToken]);
 
   /* -------------------- FAVORITES -------------------- */
   const addToFavorites = async (movie) => {
-    if (!authToken) return;
-
-    // already favourited?
-    if (favorites.some(f => f.movieId === movie.id)) return;
+    if (!authToken || favorites.some((f) => f.movieId === movie.id)) return;
 
     try {
       const res = await fetch("/api/favorites", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: authToken
+          Authorization: authToken,
         },
         body: JSON.stringify({
           movieId: movie.id,
           title: movie.title,
-          posterPath: movie.poster_path
-        })
+          posterPath: movie.poster_path,
+        }),
       });
 
       if (!res.ok) return;
@@ -67,18 +77,62 @@ const MoviesContextProvider = (props) => {
   const removeFromFavorites = async (movie) => {
     if (!authToken) return;
 
-    const fav = favorites.find(f => f.movieId === movie.id);
+    const fav = favorites.find((f) => f.movieId === movie.id);
     if (!fav) return;
 
     try {
       await fetch(`/api/favorites/${fav._id}`, {
         method: "DELETE",
-        headers: { Authorization: authToken }
+        headers: { Authorization: authToken },
       });
 
-      setFavorites(favorites.filter(f => f.movieId !== movie.id));
+      setFavorites(favorites.filter((f) => f.movieId !== movie.id));
     } catch (err) {
       console.error("Remove favourite failed:", err);
+    }
+  };
+
+  /* -------------------- MUST WATCH -------------------- */
+  const addToMustWatch = async (movie) => {
+    if (!authToken || mustWatch.some((w) => w.movieId === movie.id)) return;
+
+    try {
+      const res = await fetch("/api/mustwatch", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: authToken,
+        },
+        body: JSON.stringify({
+          movieId: movie.id,
+          title: movie.title,
+          posterPath: movie.poster_path,
+        }),
+      });
+
+      if (!res.ok) return;
+
+      const newItem = await res.json();
+      setMustWatch([...mustWatch, newItem]);
+    } catch (err) {
+      console.error("Add to must-watch failed:", err);
+    }
+  };
+
+  const removeFromMustWatch = async (movie) => {
+    if (!authToken) return;
+
+    const item = mustWatch.find((w) => w.movieId === movie.id);
+    if (!item) return;
+
+    try {
+      await fetch(`/api/mustwatch/${item._id}`, {
+        method: "DELETE",
+        headers: { Authorization: authToken },
+      });
+      setMustWatch(mustWatch.filter((w) => w.movieId !== movie.id));
+    } catch (err) {
+      console.error("Remove from must-watch failed:", err);
     }
   };
 
@@ -87,29 +141,24 @@ const MoviesContextProvider = (props) => {
     setMyReviews({ ...myReviews, [movie.id]: review });
   };
 
-  /* -------------------- MUST WATCH -------------------- */
-  const addToMustWatch = (movie) => {
-    if (!mustWatch.includes(movie.id)) {
-      setMustWatch([...mustWatch, movie.id]);
-    }
-  };
-
-  const removeFromMustWatch = (movie) => {
-    setMustWatch(mustWatch.filter(id => id !== movie.id));
+  const removeReview = (movie) => {
+    const updated = { ...myReviews };
+    delete updated[movie.id];
+    setMyReviews(updated);
   };
 
   /* -------------------- PROVIDER -------------------- */
   return (
     <MoviesContext.Provider
       value={{
-        // expose ONLY movie IDs to UI (unchanged behaviour)
-        favorites: favorites.map(f => f.movieId),
-        mustWatch,
+        favorites: favorites.map((f) => f.movieId),
+        mustWatch: mustWatch.map((w) => w.movieId),
         addToFavorites,
         removeFromFavorites,
-        addReview,
         addToMustWatch,
-        removeFromMustWatch
+        removeFromMustWatch,
+        addReview,
+        removeReview,
       }}
     >
       {props.children}

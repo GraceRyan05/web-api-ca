@@ -7,6 +7,7 @@ import moviesRouter from './api/movies';
 //... other imports
 import usersRouter from './api/users';
 import favoritesRouter from './api/favorites';
+import mustWatchRouter from './api/mustwatch';
 
 
 import authenticate from './authenticate';
@@ -44,6 +45,9 @@ app.use('/api/users', usersRouter);
 
 //Favourites router
 app.use('/api/favorites', favoritesRouter);
+
+//must-watch router
+app.use('/api/mustwatch', mustWatchRouter);
 
 
 
