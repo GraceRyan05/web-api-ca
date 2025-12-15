@@ -29,6 +29,7 @@ import { useState, useMemo } from "react";
 import AuthContextProvider from "./contexts/authContext";
 import ProtectedRoutes from "./protectedRoutes";
 
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -76,13 +77,13 @@ const App = () => {
   return (
     
     <QueryClientProvider client={queryClient}>
+      <AuthContextProvider>
       <MoviesContextProvider>
         {/* ThemeProvider to apply the theme across the app */}
         <ThemeProvider theme={theme}>
           {/* CssBaseline to apply global CSS resets and base styles */}
           <CssBaseline /> 
       <BrowserRouter>
-      <AuthContextProvider>
         <SiteHeader  onToggleTheme={toggleTheme} isDarkMode={mode === 'dark'}/>
           <Routes>
           <Route path="/movies" element={<HomePage />} />
@@ -110,10 +111,10 @@ const App = () => {
           <Route path="*" element={<Navigate to="/" />} />
             
           </Routes>
-          </AuthContextProvider>
       </BrowserRouter>
       </ThemeProvider>
       </MoviesContextProvider>
+      </AuthContextProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
  

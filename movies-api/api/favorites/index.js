@@ -18,7 +18,7 @@ router.get('/', authenticate, asyncHandler(async (req, res) => {
 
 // Add a movie to favourites
 router.post('/', authenticate, asyncHandler(async (req, res) => {
-  const favorite = new Favourite({
+  const favorite = new Favorite({
     user: req.user._id,
     movieId: req.body.movieId,
     title: req.body.title,
