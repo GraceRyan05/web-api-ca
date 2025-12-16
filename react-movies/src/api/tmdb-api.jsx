@@ -48,7 +48,8 @@ export const getMovieReviews = (id) => {
   });
 };
 
-export const getMovie = (id) => {
+export const getMovie = ({ queryKey }) => {
+  const [, { id }] = queryKey;
   return fetch(`http://localhost:8080/api/movies/${id}`, {
     headers: { 'Authorization': window.localStorage.getItem('token') }
   }).then(res => {
@@ -59,7 +60,9 @@ export const getMovie = (id) => {
 
 
 
-export const getMovieImages = (id) => {
+
+export const getMovieImages = ({ queryKey }) => {
+  const [, { id }] = queryKey; 
   return fetch(`http://localhost:8080/api/movies/${id}/images`, {
     headers: { 'Authorization': window.localStorage.getItem('token') }
   }).then(res => {
@@ -67,6 +70,7 @@ export const getMovieImages = (id) => {
     return res.json();
   });
 };
+
 
 // Top rated movies
 export const getTopRatedMovies = (page = 1) => {
@@ -118,7 +122,8 @@ export const getNowPlaying = (page = 1) => {
 };
   
 
-export const getMovieCredits = (id) => {
+export const getMovieCredits = ({ queryKey }) => {
+  const [, { id }] = queryKey;
   return fetch(`http://localhost:8080/api/movies/${id}/credits`, {
     headers: { 'Authorization': window.localStorage.getItem('token') }
   }).then(res => {
@@ -126,6 +131,7 @@ export const getMovieCredits = (id) => {
     return res.json();
   });
 };
+
 
 export const getMovieRecommendations = (id) => {
   return fetch(`http://localhost:8080/api/movies/${id}/recommendations`, {
@@ -136,25 +142,28 @@ export const getMovieRecommendations = (id) => {
   });
 };
 
-export const getPerson = (id) => {
+export const getPerson = ({ queryKey }) => {
+  const [, { id }] = queryKey;
   return fetch(`http://localhost:8080/api/movies/person/${id}`, {
     headers: { 'Authorization': window.localStorage.getItem('token') }
   }).then(res => {
-    if (!res.ok) throw new Error('Something went wrong');
+    if (!res.ok) throw new Error('Failed to fetch person');
     return res.json();
   });
 };
 
-export const getPersonMovieCredits = (id) => {
+export const getPersonMovieCredits = ({ queryKey }) => {
+  const [, { id }] = queryKey; 
   return fetch(`http://localhost:8080/api/movies/person/${id}/movie-credits`, {
     headers: { 'Authorization': window.localStorage.getItem('token') }
   }).then(res => {
-    if (!res.ok) throw new Error('Something went wrong');
+    if (!res.ok) throw new Error('Failed to fetch movie credits');
     return res.json();
   });
 };
 
-export const getPersonImages = (id) => {
+export const getPersonImages = ({ queryKey }) => {
+  const [, { id }] = queryKey; 
   return fetch(`http://localhost:8080/api/movies/person/${id}/images`, {
     headers: { 'Authorization': window.localStorage.getItem('token') }
   }).then(res => {
@@ -162,6 +171,7 @@ export const getPersonImages = (id) => {
     return res.json();
   });
 };
+
 
 //Search feature
 export const searchMovies = (args) => {

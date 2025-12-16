@@ -12,6 +12,7 @@ const TemplatePersonPage = ({ person, children }) => {
     queryKey: ['images', { id: person.id }],
     queryFn: getPersonImages,
   });
+  
 
   if (isPending) {
     return <Spinner />;
