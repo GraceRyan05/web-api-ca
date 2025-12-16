@@ -39,7 +39,6 @@ app.use(express.json());
 
 app.use('/api/movies', moviesRouter); 
 
-
 //Users router
 app.use('/api/users', usersRouter);
 
