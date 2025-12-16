@@ -38,7 +38,7 @@ export const getGenres = () => {
   });
 };
 
-
+// Movie reviews
 export const getMovieReviews = (id) => {
   return fetch(`http://localhost:8080/api/movies/${id}/reviews`, {
     headers: { 'Authorization': window.localStorage.getItem('token') }
@@ -48,6 +48,7 @@ export const getMovieReviews = (id) => {
   });
 };
 
+// Movie details
 export const getMovie = ({ queryKey }) => {
   const [, { id }] = queryKey;
   return fetch(`http://localhost:8080/api/movies/${id}`, {
@@ -58,9 +59,7 @@ export const getMovie = ({ queryKey }) => {
   });
 };
 
-
-
-
+// Movie images
 export const getMovieImages = ({ queryKey }) => {
   const [, { id }] = queryKey; 
   return fetch(`http://localhost:8080/api/movies/${id}/images`, {
@@ -121,7 +120,7 @@ export const getNowPlaying = (page = 1) => {
   });
 };
   
-
+// Movie credits
 export const getMovieCredits = ({ queryKey }) => {
   const [, { id }] = queryKey;
   return fetch(`http://localhost:8080/api/movies/${id}/credits`, {
@@ -132,7 +131,7 @@ export const getMovieCredits = ({ queryKey }) => {
   });
 };
 
-
+// Movie recommendations
 export const getMovieRecommendations = (id) => {
   return fetch(`http://localhost:8080/api/movies/${id}/recommendations`, {
     headers: { 'Authorization': window.localStorage.getItem('token') }
@@ -142,6 +141,7 @@ export const getMovieRecommendations = (id) => {
   });
 };
 
+// Person details
 export const getPerson = ({ queryKey }) => {
   const [, { id }] = queryKey;
   return fetch(`http://localhost:8080/api/movies/person/${id}`, {
@@ -152,6 +152,7 @@ export const getPerson = ({ queryKey }) => {
   });
 };
 
+// Person movie credits
 export const getPersonMovieCredits = ({ queryKey }) => {
   const [, { id }] = queryKey; 
   return fetch(`http://localhost:8080/api/movies/person/${id}/movie-credits`, {
@@ -162,6 +163,7 @@ export const getPersonMovieCredits = ({ queryKey }) => {
   });
 };
 
+// Person images
 export const getPersonImages = ({ queryKey }) => {
   const [, { id }] = queryKey; 
   return fetch(`http://localhost:8080/api/movies/person/${id}/images`, {
@@ -174,24 +176,19 @@ export const getPersonImages = ({ queryKey }) => {
 
 
 //Search feature
-export const searchMovies = (args) => {
-  //console.log(args)
-  const [, { query, page = 1 }] = args.queryKey;
-  return fetch(
-    `https://api.themoviedb.org/3/search/movie?api_key=${import.meta.env.VITE_TMDB_KEY}&query=${query}&page=${page}`
-  ).then((response) => {
-    if (!response.ok) {
-      return response.json().then((error) => {
-        throw new Error(error.status_message || "Something went wrong");
-      });
-    }
-    return response.json();
+export const getSearchResults = ({ queryKey }) => {
+  const [, { query }] = queryKey; 
+  return fetch(`http://localhost:8080/api/movies/search/${query}`, {
+    headers: { 'Authorization': window.localStorage.getItem('token') }
   })
-  .catch((error) => {
-    throw error
- });
+  .then(res => {
+    if (!res.ok) throw new Error('Something went wrong');
+    return res.json();
+  });
 };
 
+
+// User authentication: login and signup
 export const login = async (username, password) => {
     const response = await fetch('http://localhost:8080/api/users', {
         headers: {

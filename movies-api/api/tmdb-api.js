@@ -186,4 +186,19 @@ export const getGenres = async () => {
   return await response.json();
 };
 
+//-------------------- SEARCH MOVIES -------------------- //
+export const searchMovies = async (query) => {
+  const response = await fetch(
+    `${baseUrl}/search/movie?api_key=${apiKey}&language=en-US&query=${encodeURIComponent(query)}&include_adult=false`
+  );
+
+  if (!response.ok) {
+    throw new Error((await response.json()).message);
+  }
+
+  const data = await response.json();
+  return data.results;
+};
+
+
 

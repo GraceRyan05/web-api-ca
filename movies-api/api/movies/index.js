@@ -15,7 +15,8 @@ import {
   getMovieRecommendations,
   getPersonDetails,
   getPersonMovieCredits,
-  getPersonImages
+  getPersonImages,
+  searchMovies
  } from '../tmdb-api'; 
 
 import authenticate from '../../authenticate';
@@ -114,6 +115,13 @@ router.get('/person/:id/movie-credits', asyncHandler(async (req, res) => {
 router.get('/person/:id/images', asyncHandler(async (req, res) => {
   const images = await getPersonImages(req.params.id);
   res.status(200).json(images);
+}));
+
+// Search movies by query
+router.get('/search/:query', asyncHandler(async (req, res) => {
+  const query = req.params.query;
+  const results = await searchMovies(query);
+  res.status(200).json(results);
 }));
 
 
